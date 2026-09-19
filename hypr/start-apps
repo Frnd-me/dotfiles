@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+wait_class() {
+    local class="$1"
+
+    until hyprctl -j clients |
+        jq -e --arg class "$class" \
+        '.[] | select(.class == $class)' >/dev/null
+    do
+        sleep 0.1
+    done
+}
+
+# Workspace 1
+
+brave-origin &
+wait_class "brave-origin"
+
+omarchy-launch-terminal --app-id=vibe --title=Vibe vibe &
+wait_class "vibe"
+
+omarchy-launch-terminal --app-id=neomutt --title=Neomutt neomutt &
+wait_class "neomutt"
+
+omarchy-launch-terminal --app-id=gomuks --title=Gomuks gomuks &
+wait_class "gomuks"
+
+signal-desktop &
+wait_class "signal"
+
+proton-pass &
+wait_class "Proton Pass"
+
+# Workspace 2
+
+code &
